@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Image Search Results</h2>
+{% if matches %}
+  <div class="results">
+    {% for item in matches %}
+      <div class="item">
+        <img src="{{ url_for('static', filename='img/' + item.image_path) }}" width="150">
+        <h4>{{ item.name }}</h4>
+        <p>{{ item.description }}</p>
+        <p><b>Status:</b> {{ item.status }}</p>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No matches found.</p>
+{% endif %}
+{% endblock %}

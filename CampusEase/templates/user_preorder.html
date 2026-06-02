@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Preorders | CampusEase</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #007bff;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      width: 85%;
+      max-width: 900px;
+      margin: 30px auto;
+    }
+
+    .orders-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .order-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+
+    .order-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .order-card h3 {
+      color: #007bff;
+      margin-bottom: 8px;
+    }
+
+    .order-card p {
+      margin: 4px 0;
+      color: #444;
+    }
+
+    .status {
+      font-weight: bold;
+      color: #28a745;
+    }
+
+    .no-orders {
+      text-align: center;
+      background: #fff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-top: 30px;
+      color: #666;
+    }
+
+    .no-orders h3 {
+      color: #555;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #888;
+      font-size: 0.9rem;
+      padding: 15px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    Welcome, {{ user.name }} 👋
+  </header>
+
+  <div class="container">
+    <h2>Your Preorders</h2>
+
+    <div class="orders-container">
+      {% if orders and orders|length > 0 %}
+        {% for order in orders %}
+          <div class="order-card">
+            <h3>{{ order.food_name }}</h3>
+            <p>Quantity: {{ order.quantity }}</p>
+            <p>Total Price: ₹{{ order.total_price }}</p>
+            {% if order.date_ordered %}
+              <p>Ordered On: {{ order.date_ordered.strftime('%d-%m-%Y %H:%M') }}</p>
+            {% endif %}
+            <p class="status">Status: {{ order.status }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="no-orders">
+          <h3>No preorders yet 😔</h3>
+          <p>Once you place a preorder, it will appear here!</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 CampusEase | All Rights Reserved
+  </footer>
+</body>
+</html>

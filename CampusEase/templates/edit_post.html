@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Post | CampusEase</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+  <h2 class="text-primary fw-bold mb-4">✏️ Edit Post</h2>
+
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">Item Name</label>
+      <input type="text" name="name" value="{{ item.name }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea name="description" class="form-control" rows="3">{{ item.description }}</textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Status</label>
+      <select name="status" class="form-select" required>
+        <option value="Lost" {% if item.status == 'Lost' %}selected{% endif %}>Lost</option>
+        <option value="Found" {% if item.status == 'Found' %}selected{% endif %}>Found</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Contact Info</label>
+      <input type="text" name="contact" value="{{ item.contact }}" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Location</label>
+      <input type="text" name="location" value="{{ item.location }}" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-success">Save Changes</button>
+    <a href="{{ url_for('my_posts') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+@app.route('/search', methods=['POST'])
+def search():
+    if 'image' not in request.files:
+        flash("Please upload an image to search.")
+        return redirect(url_for('lost_found'))
+
+    file = request.files['image']
+    if file.filename == '':
+        flash("No file selected.")
+        return redirect(url_for('lost_found'))
+
+    # Save uploaded image temporarily
+    upload_path = os.path.join('static', 'uploads', file.filename)
+    os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+    file.save(upload_path)
+
+    # ✅ Compare uploaded image with images in static/img/
+    matched_image = find_most_similar_image(upload_path, 'static/img')
+
+    if matched_image:
+        # ✅ Find matching LostFoundItem record in DB
+        matched_filename = os.path.basename(matched_image)
+        matched_item = LostFoundItem.query.filter_by(image_path=matched_filename).first()
+
+        if matched_item:
+            owner = User.query.get(matched_item.owner_id)
+            matched_item.owner_name = owner.name if owner else "Unknown"
+            flash("✅ Possible match found!")
+            return render_template('lost_found.html', matched_item=matched_item, lost_found_items=LostFoundItem.query.all())
+
+    flash("❌ No similar item found.")
+    return redirect(url_for('lost_found'))
+
+
+
+
+
+<!-- 🔍 Image Search Form -->
+<div class="search-section">
+  <h2>Search Lost & Found by Image</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" required>
+    <button type="submit">Search</button>
+  </form>
+</div>
+
+<hr>
+
+<!-- 🟢 Display message -->
+{% if message %}
+  <div class="alert alert-info" style="margin-top:10px;">
+    {{ message }}
+  </div>
+{% endif %}
+
+<!-- 🖼️ Matched Item (if found) -->
+{% if matched_item %}
+  <div class="matched-result" style="margin-top:20px;">
+    <h3>Matched Item Found:</h3>
+    <div class="card">
+      <img src="{{ url_for('static', filename='img/' + matched_item.image_path) }}" alt="Matched Image" width="250">
+      <h4>{{ matched_item.name }}</h4>
+      <p><b>Status:</b> {{ matched_item.status }}</p>
+      <p><b>Location:</b> {{ matched_item.location }}</p>
+      <p><b>Contact:</b> {{ matched_item.contact }}</p>
+    </div>
+  </div>
+{% endif %}
+
+
+<form method="POST" action="{{ url_for('search') }}" enctype="multipart/form-data">
+  <input type="file" name="image" accept="image/*" class="form-control mb-2" required>
+  <button type="submit" class="btn btn-primary w-100">🔍 Search by Image</button>
+</form>

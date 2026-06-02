@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CampusEase | Admin Preorders</title>
+<style>
+body { font-family: 'Poppins', sans-serif; background: #f0f4f8; margin:0; padding:0; }
+header { background: #1565c0; color: white; padding: 15px 40px; }
+table { width: 90%; margin: 20px auto; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
+th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+th { background: #1976d2; color: white; }
+tr:hover { background: #f1f1f1; }
+button { padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; }
+button.pending { background: #ffc107; color: white; }
+button.ready { background: #4caf50; color: white; }
+button.delivered { background: #2196f3; color: white; }
+.flash-message { text-align:center; color:green; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Admin Preorders Dashboard</h1>
+</header>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-message">
+      {% for msg in messages %}
+        {{ msg }}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>User</th>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+            <th>Status</th>
+            <th>Date Ordered</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.user.name }}</td>
+            <td>{{ order.item_name }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>₹{{ order.total_price }}</td>
+            <td>{{ order.status }}</td>
+            <td>{{ order.date_ordered.strftime('%d-%m-%Y %H:%M') }}</td>
+            <td>
+                {% if order.status != 'Ready' %}
+                <a href="{{ url_for('update_order', order_id=order.id, new_status='Ready') }}"><button class="ready">Mark Ready</button></a>
+                {% endif %}
+                {% if order.status != 'Delivered' %}
+                <a href="{{ url_for('update_order', order_id=order.id, new_status='Delivered') }}"><button class="delivered">Mark Delivered</button></a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>
